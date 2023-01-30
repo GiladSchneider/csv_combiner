@@ -1,26 +1,38 @@
-
 import sys
 import os
 import pandas as pd
 
-def check_filename(filename):
+def check_filename(filename, filenames):
     """
     Input:
         filename: string -> filename to check 
+        filenames: set -> set of all filenames in /fixtures
     Output:
-        is_legal: boolean -> True if filename is a legal filename
+        True if filename is legal, else raises an error
     """
-    # check if filename is a string
+    # check that filename is a string
     if not isinstance(filename, str):
-        return False
-    # check if filename is in /fixtures
+        raise NameError(f"file name '{filename}' is not a string")
+
+    # check that the file path starts with ./fixtures/
     if not filename.startswith('./fixtures/'):
-        return False
+        raise NameError(f"file name '{filename}' must come from /fixtures")
+    
     # check that filename is in the format ./fixtures/<name>.csv
     parts = filename.split(".")
     if len(parts) != 3 or parts[1] == "" or parts[-1] != "csv":
-        return False
+       raise NameError(f"file name '{filename}' is not in the correct format")
+
+    # check that filename is in /fixtures
+    if filename not in filenames:    
+        raise FileNotFoundError(f"file '{filename}' is not in /fixtures")
+
+    # check that the file is not empty
+    if os.stat(filename).st_size == 0:              
+        raise ValueError(f"file '{filename}' is empty")
+    
     return True
+
 
 def merge_dataframes(df1, df2):
     """
@@ -35,19 +47,14 @@ def merge_dataframes(df1, df2):
     else:
         return pd.concat([df1, df2], ignore_index=True)
 
+
 def main():
     filenames = set("./fixtures/" + s for s in os.listdir("fixtures")) # get all filenames in /fixtures    
-    for filename in sys.argv[1:]:           # iterate over all filenames passed in as arguments
-        if not check_filename(filename):    # check if filename is legal
-            raise NameError(f"file name '{filename}' is not formatted correctly")
-        elif filename not in filenames:     # check if filename is in /fixtures
-            raise FileNotFoundError(f"file '{filename}' is not in /fixtures") 
-        # make sure the file is not empty
-        elif os.stat(filename).st_size == 0:
-            raise ValueError(f"file '{filename}' is empty")
+    for filename in sys.argv[1:]:                   
+        check_filename(filename, filenames)             # check that filename is legal
         
     # convert all csv files to dataframes
-    dataframes = []                         # list of csv files converted to dataframes
+    dataframes = []                                     # list of csv files converted to dataframes
     for filename in sys.argv[1:]:
             df = pd.read_csv(filename)                  # convert csv to dataframe              
             df['filename'] = os.path.basename(filename) # add a column to dataframe with the filename's basename            
