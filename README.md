@@ -11,7 +11,7 @@ $ python3 src/csv_combiner.py ./fixtures/<filename 1> ./fixtures/<filename 2>  .
 ```
 For example:
 ```
-python3 src/csv_combiner.py ./fixtures/accessories.csv ./fixtures/clothing.csv  ./fixtures/accessories.csv > combined.csv
+python3 src/csv_combiner.py ./fixtures/accessories.csv ./fixtures/clothing.csv  ./fixtures/household_cleaners.csv > combined.csv
 ```
 
 To unit test the program, run:
