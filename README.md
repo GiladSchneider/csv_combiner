@@ -22,6 +22,6 @@ pytest
 
 ## Orginization
 The main code is located in the 'csv_combiner.py' file in the src directory.
-You can find the unit tests in the 'test_csv_combiner.py' file.
+You can find the unit tests in the 'test_csv_combiner.py' file and the CI file in the .github repository.
 
 I look forward to writing more code alongside you!
